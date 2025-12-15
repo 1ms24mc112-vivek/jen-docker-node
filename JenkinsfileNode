@@ -1,0 +1,64 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = "viveknshet112/node-webapp"
+        IMAGE_TAG  = "${BUILD_NUMBER}"
+    }
+
+    stages {
+
+        stage('Checkout Code') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/1ms24mc112-vivek/web-app.git'
+            }
+        }
+
+        stage('Install Node Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh 'npm test'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    app = docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry(
+                        'https://index.docker.io/v1/',
+                        'dockerhub'
+                    ) {
+                        app.push("${IMAGE_TAG}")
+                        app.push("latest")
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+        success {
+            echo "✅ Node.js Docker Image pushed successfully"
+        }
+        failure {
+            echo "❌ Pipeline failed"
+        }
+    }
+}
