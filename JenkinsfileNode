@@ -1,5 +1,4 @@
-
-def app   // 👈 global variable
+def app   // global variable
 
 pipeline {
     agent any
