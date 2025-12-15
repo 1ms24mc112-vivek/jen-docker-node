@@ -1,3 +1,4 @@
+def app   // 👈 global variable
 
 pipeline {
     agent any
@@ -24,7 +25,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    def app = docker.build("${IMAGE_NAME}")
+                    app = docker.build("${IMAGE_NAME}:latest")
                 }
             }
         }
@@ -48,10 +49,11 @@ pipeline {
             cleanWs()
         }
         success {
-            echo "Node.js Docker Image pushed successfully"
+            echo "✅ Node.js Docker Image pushed successfully"
         }
         failure {
-            echo "Pipeline failed"
+            echo "❌ Pipeline failed"
         }
     }
 }
+
