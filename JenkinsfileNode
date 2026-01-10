@@ -4,7 +4,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "viveknshet112/node_webapp_auto"
+        IMAGE_NAME = "viveknshet/jen-node-doc-kube"
     }
 
     stages {
